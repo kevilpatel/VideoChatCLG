@@ -53,8 +53,7 @@ var peer = new Peer({
 });
 
 let myVideoStream;
-navigator.mediaDevices
-  .getUserMedia({
+navigator.mediaDevices.getUserMedia({
     audio: true,
     video: true,
   })
@@ -74,6 +73,22 @@ navigator.mediaDevices
     socket.on("user-connected", (userId) => {
       connectToNewUser(userId, stream);
     });
+  })
+  // .catch(function(err) {
+  //   console.log(err); // log the error object
+  // alert("An error occurred: " + err.message); // display an error message to the user
+  // })
+  .catch(function(err) {
+    console.log(err); // log the error object
+    if (err.name === "NotFoundError" || err.name === "DevicesNotFoundError") {
+      alert("Camera or microphone not found.");
+    } else if (err.name === "NotReadableError" || err.name === "TrackStartError") {
+      alert("Camera or microphone is already in use.");
+    } else if (err.name === "NotAllowedError" || err.name === "PermissionDeniedError") {
+      alert("Permission to access camera or microphone is denied.");
+    } else {
+      alert("An error occurred: " + err.message); // display a generic error message
+    }
   });
 
 const connectToNewUser = (userId, stream) => {
